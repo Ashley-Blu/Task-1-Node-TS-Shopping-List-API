@@ -48,13 +48,13 @@ In your prefered API platform, e.g. Postman
 This is the list of all the things you can do: 
 ---
 
-# Add an item
+## Add an item
 - POST /lists
 
-# Retrieve all item
+## Retrieve all item
 - GET /lists
 
-# Retrieve an item using its idea
+## Retrieve an item using its idea
 - GET /lists/:id
 Content-Type: application/json
 
@@ -64,7 +64,7 @@ Content-Type: application/json
   "status": "Pending"
 }
 
-# Update an item
+## Update an item
 - PUT /lists/:id
 Content-Type: application/json
 
@@ -74,7 +74,7 @@ Content-Type: application/json
   "status": "Bought"
 }
 
-# Delete an item
+## Delete an item
 - DELETE /lists/:id
 
 ## Data model 
