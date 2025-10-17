@@ -1,5 +1,10 @@
 import http, { IncomingMessage, ServerResponse } from "http";
-import { addItem, getItemById, getItems } from "../controllers/List";
+import {
+  addItem,
+  getItemById,
+  getItems,
+  updateItem,
+} from "../controllers/List";
 import { error } from "console";
 
 export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
@@ -32,7 +37,7 @@ export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
       return;
     }
 
-    if ((req.method = "POST")) {
+    if (req.method === "POST") {
       let body = "";
       req.on("data", (chunk) => {
         console.log(chunk, "chunk");
@@ -55,7 +60,8 @@ export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
             res.end(JSON.stringify({ error: "Item status is required" }));
           }
 
-          const newItem = addItem(name, quantity, status);
+          const statusBoolean = (status as string ).toLowerCase() === "bought" || status === true;
+          const newItem = addItem(name, quantity, statusBoolean);
           res.writeHead(201, { "content-type": "application/json" });
           res.end(JSON.stringify(newItem));
         } catch (error) {
@@ -65,6 +71,33 @@ export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
       });
       return;
     }
+
+    if (req.method === "PUT" && id) {
+      let body = "";
+      req.on("data", (chunk) => (body += chunk.toString()));
+
+      req.on("end", () => {
+        try {
+          const { name, quantity, status } = JSON.parse(body);
+          const statusBoolean = (status as string ).toLowerCase() === "bought" || status === true;
+          const updatedItem = updateItem(id, name, quantity, statusBoolean);
+
+          if (!updatedItem) {
+            res.writeHead(404, { "content-type": "application/json" });
+            res.end(JSON.stringify({ error: "Item not found" }));
+            return;
+          }
+
+          res.writeHead(200, { "content-type": "application/json" });
+          res.end(JSON.stringify(updatedItem));
+        } catch (err) {
+          res.writeHead(400, { "content-type": "application/json" });
+          res.end(JSON.stringify({ error: "Invalid JSON payload" }));
+        }
+      });
+      return;
+    }
+
     res.writeHead(405, { "content-type": "application/json" });
     res.end(JSON.stringify({ error: "Method not allowed on /lists" }));
   }
