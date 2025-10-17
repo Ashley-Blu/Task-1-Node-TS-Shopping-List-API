@@ -94,7 +94,7 @@ export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
           res.end(
             JSON.stringify({
               success: true,
-              message: "Item added successfully",
+              message: 'Item added successfully',
               data: newItem,
             })
           );
@@ -139,16 +139,27 @@ export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
     }
 
     if (req.method === "DELETE" && id) {
-      const deleted = deleteItem(id);
+      const deleted = await deleteItem(id);
+
       if (!deleted) {
-        res.writeHead(404, { "content-type": "application/json" });
+        res.writeHead(404, { "Content-Type": "application/json" });
         res.end(
-          JSON.stringify({ message: `Item no.${id} deleted successfully` })
+          JSON.stringify({
+            success: false,
+            message: `Item no.${id} not found`,
+          })
         );
         return;
-      } else {
-        res.end(JSON.stringify);
       }
+
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          success: true,
+          message: `Item no.${id} deleted successfully`,
+        })
+      );
+      return;
     }
 
     res.writeHead(405, { "content-type": "application/json" });
