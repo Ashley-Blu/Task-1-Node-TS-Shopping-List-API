@@ -1,6 +1,7 @@
 import http, { IncomingMessage, ServerResponse } from "http";
 import {
   addItem,
+  deleteItem,
   getItemById,
   getItems,
   updateItem,
@@ -60,7 +61,8 @@ export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
             res.end(JSON.stringify({ error: "Item status is required" }));
           }
 
-          const statusBoolean = (status as string ).toLowerCase() === "bought" || status === true;
+          const statusBoolean =
+            (status as string).toLowerCase() === "bought" || status === true;
           const newItem = addItem(name, quantity, statusBoolean);
           res.writeHead(201, { "content-type": "application/json" });
           res.end(JSON.stringify(newItem));
@@ -79,7 +81,8 @@ export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
       req.on("end", () => {
         try {
           const { name, quantity, status } = JSON.parse(body);
-          const statusBoolean = (status as string ).toLowerCase() === "bought" || status === true;
+          const statusBoolean =
+            (status as string).toLowerCase() === "bought" || status === true;
           const updatedItem = updateItem(id, name, quantity, statusBoolean);
 
           if (!updatedItem) {
@@ -96,6 +99,15 @@ export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
         }
       });
       return;
+    }
+
+    if (req.method === "DELETE" && id) {
+      const deleted = deleteItem(id);
+      if (!deleted) {
+        res.writeHead(404, { "content-type": "application/json" });
+        res.end(JSON.stringify({ error: "Item not found" }));
+        return;
+      }
     }
 
     res.writeHead(405, { "content-type": "application/json" });
