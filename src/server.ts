@@ -1,7 +1,7 @@
 import http, { IncomingMessage, ServerResponse } from 'http';
 import { listsRoute } from './routes/List'
 
-const PORT = 3000;
+const PORT = 4000;
 
 const requestListener = (req: IncomingMessage, res: ServerResponse) => {
     if(req.url?.startsWith('/lists')) {
