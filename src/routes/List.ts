@@ -16,8 +16,28 @@ export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
     const id = parts[2] ? parseInt(parts[2]) : undefined;
 
     if (req.method === "GET" && !id) {
-      res.writeHead(200, { "content-type": "application/json" });
-      res.end(JSON.stringify(getItems()));
+      const items = await getItems(); // Wait for async data if needed
+
+      if (!items || items.length === 0) {
+        res.writeHead(404, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({
+            success: false,
+            message: "No items found.",
+            data: [],
+          })
+        );
+        return;
+      }
+
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          success: true,
+          message: "Items retrieved successfully.",
+          data: items,
+        })
+      );
       return;
     }
 
@@ -34,7 +54,13 @@ export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
         return;
       }
       res.writeHead(200, { "content-type": "application/json" });
-      res.end(JSON.stringify(item));
+      res.end(
+        JSON.stringify({
+          successs: true,
+          message: `Item no.${id} retrieved successfully`,
+          data: item,
+        })
+      );
       return;
     }
 
@@ -65,7 +91,13 @@ export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
             (status as string).toLowerCase() === "bought" || status === true;
           const newItem = addItem(name, quantity, statusBoolean);
           res.writeHead(201, { "content-type": "application/json" });
-          res.end(JSON.stringify(newItem));
+          res.end(
+            JSON.stringify({
+              success: true,
+              message: "Item added successfully",
+              data: newItem,
+            })
+          );
         } catch (error) {
           res.writeHead(400, { "content-type": "application/json" });
           res.end(JSON.stringify({ error: "Invalid JSON payload" }));
@@ -92,7 +124,12 @@ export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
           }
 
           res.writeHead(200, { "content-type": "application/json" });
-          res.end(JSON.stringify(updatedItem));
+          res.end(
+            JSON.stringify({
+              success: true,
+              message: `Item no.${id} updated successfully`,
+            })
+          );
         } catch (err) {
           res.writeHead(400, { "content-type": "application/json" });
           res.end(JSON.stringify({ error: "Invalid JSON payload" }));
@@ -105,8 +142,12 @@ export const listsRoute = async (req: IncomingMessage, res: ServerResponse) => {
       const deleted = deleteItem(id);
       if (!deleted) {
         res.writeHead(404, { "content-type": "application/json" });
-        res.end(JSON.stringify({ error: "Item not found" }));
+        res.end(
+          JSON.stringify({ message: `Item no.${id} deleted successfully` })
+        );
         return;
+      } else {
+        res.end(JSON.stringify);
       }
     }
 
