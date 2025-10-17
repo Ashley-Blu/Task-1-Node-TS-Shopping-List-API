@@ -31,7 +31,7 @@ In your VSCode terminal, e.g.
 
 ```bash
 
-git clone https://github.com/<your-username>/shopping-list-api.git
+git clone https://github.com/Ashley-Blu/Task-1-Node-TS-Shopping-List-API
 cd shopping-list-api
 
 npm install
@@ -47,9 +47,15 @@ In your prefered API platform, e.g. Postman
 
 This is the list of all the things you can do: 
 ---
-- GET /lists
-- GET /lists/:id
+
+### Add an item
 - POST /lists
+
+### Retrieve all item
+- GET /lists
+
+### Retrieve an item using its idea
+- GET /lists/:id
 Content-Type: application/json
 
 {
@@ -58,6 +64,7 @@ Content-Type: application/json
   "status": "Pending"
 }
 
+### Update an item
 - PUT /lists/:id
 Content-Type: application/json
 
@@ -67,9 +74,10 @@ Content-Type: application/json
   "status": "Bought"
 }
 
+### Delete an item
 - DELETE /lists/:id
 
-## Data model 
+### Data model 
 
 export interface List {
   id: number;
