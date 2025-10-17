@@ -31,7 +31,7 @@ In your VSCode terminal, e.g.
 
 ```bash
 
-git clone https://github.com/<your-username>/shopping-list-api.git
+git clone https://github.com/https://github.com/Ashley-Blu/Task-1-Node-TS-Shopping-List-API
 cd shopping-list-api
 
 npm install
